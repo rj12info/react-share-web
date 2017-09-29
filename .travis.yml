@@ -1,4 +1,6 @@
-language: node_js
-rvm:
- - iojs
- - "7"
+deploy:
+  provider: pages
+  skip_cleanup: true
+  github_token: 38d46ae11289f18e24530b4518b78c759230c575 # Set in travis-ci.org dashboard
+  on:
+    branch: master
