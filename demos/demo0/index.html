@@ -1,39 +1,157 @@
+
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>react-share/demos/demo0</title>
+<body>
+<div style="position: relative; display: block; max-width: 100%;">
+    <div style="padding-top: 56.25%;">
+        <video id="myPlayerID" data-video-id="5588262376001" data-account="5384493731001"
+               data-player="Hk2DEMpYZ"
+               data-embed="default"
+               data-application-id
+               class="video-js"
+               controls
+               style="position: absolute; top: 0px; right: 0px; bottom: 0px; left: 0px; width: 100%; height: 100%;">
+        </video>
+        <script src="http://players.brightcove.net/5384493731001/Hk2DEMpYZ_default/index.min.js"></script>
 
-    <style type="text/css">
-      body {
-        font-family: 'Arial', sans-serif;
-        background-color: white;
-        padding: 20px;
-      }
 
-      .Demo__some-network {
-        display: inline-block;
-        margin-right: 30px;
-        text-align: center;
-      }
+        <script type="text/javascript">
+            function callGA() {
+                (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+                })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+                // GA call
+                // Testing GA Call
+                ga('create', 'UA-107189327-1', 'auto');
+                ga('send', 'pageview');
+            }
+            var myPlayer;
+            var callBackNativeMapping = new Object();
 
-      .Demo__some-network__share-count {
-        margin-top: 3px;
-        font-size: 12px;
-      }
+            videojs("myPlayerID").ready(function(){
+                myPlayer= this;
+                WebPlayerInterface.onReady();
+                callGA();
+                WebPlayerInterface.log('on Ready');
 
-      .Demo__some-network__share-button {
-        cursor: pointer;
-      }
+                videojs("myPlayerID").on('ended',function(){
+                    WebPlayerInterface.log('video ended');
+                    WebPlayerInterface.onPlayerStateChangeWithPlayerCurTime
+                    (callBackNativeMapping['ended'],-1);
+                })
 
-      .Demo__some-network__share-button:hover:not(:active) {
-        opacity: 0.75;
-      }
-    </style>
-  </head>
+                videojs("myPlayerID").on('pause',function(){
+                    WebPlayerInterface.log('video paused');
+                    WebPlayerInterface.onPlayerStateChangeWithPlayerCurTime
+                    (callBackNativeMapping['pause'],-1);
+                })
 
-  <body>
-    <div id="content"></div>
-    <script src="./bundle.js"></script>
-  </body>
+                videojs("myPlayerID").on('error',function(){
+                    WebPlayerInterface.log('error playing');
+                    WebPlayerInterface.onPlayerStateChangeWithPlayerCurTime
+                    (callBackNativeMapping['error'],-1);
+                })
+
+            });
+
+            videojs('myPlayerID').on('loadedmetadata',function(){
+                myPlayer = this;
+                myPlayer.on('ads-request',function( evt )
+                {
+                    WebPlayerInterface.log('ads-ad-started event passed to event handler');
+                })
+
+                myPlayer.on('ads-load',function( evt )
+                {
+                    WebPlayerInterface.log('ads-load event passed to event handler');
+                })
+
+                myPlayer.on('ads-pod-started',function( evt )
+                {
+                    WebPlayerInterface.log('ads-pod-started event passed to event handler');
+                })
+
+                myPlayer.on('ads-pod-ended',function( evt )
+                {
+                    WebPlayerInterface.log('ads-pod-ended event passed to event handler');
+                })
+
+                myPlayer.on('ads-allpods-completed',function( evt )
+                {
+                    WebPlayerInterface.log('ads-allpods-completed event passed to event handler');
+                })
+
+                myPlayer.on('ads-ad-started',function( evt )
+                {
+                    WebPlayerInterface.onPlayerStateChangeWithPlayerCurTime
+                    (callBackNativeMapping['ads-ad-started'],-1);
+                    WebPlayerInterface.log('ads-ad-started event passed to event handler');
+                })
+
+                myPlayer.on('ads-ad-ended',function( evt )
+                {
+                    WebPlayerInterface.onPlayerStateChangeWithPlayerCurTime
+                    (callBackNativeMapping['ads-ad-ended'],-1);
+                    WebPlayerInterface.log('ads-ad-ended event passed to event handler');
+                })
+
+                myPlayer.on('ads-pause',function( evt )
+                {
+                    WebPlayerInterface.onPlayerStateChangeWithPlayerCurTime
+                    (callBackNativeMapping['ads-pause'],-1);
+                    WebPlayerInterface.log('ads-pause event passed to event handler');
+                })
+
+                myPlayer.on('ads-play',function( evt )
+                {
+                    WebPlayerInterface.onPlayerStateChangeWithPlayerCurTime
+                    (callBackNativeMapping['ads-play'],-1);
+                    WebPlayerInterface.log('ads-play event passed to event handler');
+                })
+
+                myPlayer.on('ads-click',function( evt )
+                {
+                    WebPlayerInterface.log('ads-click event passed to event handler');
+                })
+
+                myPlayer.on('play',function( evt )
+                {
+                    WebPlayerInterface.log('play started');
+                    WebPlayerInterface.onPlayerStateChangeWithPlayerCurTime
+                    (callBackNativeMapping['play'],-1);
+                })
+
+            });
+
+            function m_playVideo(){
+                if(myPlayer != null){
+                    myPlayer.play();
+                    WebPlayerInterface.onPlayerStateChangeWithPlayerCurTime
+                    (callBackNativeMapping['play'],-1);
+                }
+            }
+
+            function m_pauseVideo(){
+                if(myPlayer != null){
+                    myPlayer.pause();
+                }
+            }
+
+            callBackNativeMapping['pause']='video_paused'
+            callBackNativeMapping['ended']='video_ended'
+            callBackNativeMapping['play']='video_started'
+            callBackNativeMapping['ads-ad-started']='ad_started'
+            callBackNativeMapping['ads-play']='ad_playing'
+            callBackNativeMapping['ads-pause']='ad_paused'
+            callBackNativeMapping['ads-ad-ended']='ad_ended'
+            callBackNativeMapping['error']='error'
+
+
+        </script>
+
+    </div>
+</div>
+</body>
 </html>
+
